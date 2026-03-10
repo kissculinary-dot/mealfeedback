@@ -16,7 +16,6 @@ background:#f4f7fb;
 display:flex;
 flex-direction:column;
 align-items:center;
-justify-content:flex-start;
 height:100vh;
 text-align:center;
 }
@@ -24,7 +23,7 @@ text-align:center;
 /* Header */
 
 .header{
-margin-top:80px;
+margin-top:100px;
 }
 
 .header h1{
@@ -33,10 +32,19 @@ margin:0;
 color:#222;
 }
 
+/* Main Center Area */
+
+.mainArea{
+flex:1;
+display:flex;
+align-items:center;
+justify-content:center;
+width:100%;
+}
+
 /* Menu Layout */
 
 .menuContainer{
-margin-top:90px;
 display:flex;
 gap:220px;
 justify-content:center;
@@ -132,7 +140,7 @@ animation:popup .45s forwards;
 100%{transform:translate(-50%,-50%) scale(1);opacity:1}
 }
 
-/* Manager dashboard */
+/* Manager Dashboard */
 
 #manager{
 position:fixed;
@@ -140,26 +148,40 @@ top:0;
 left:0;
 width:100%;
 height:100%;
-background:white;
+background:#000;
+color:#fff;
 display:none;
 flex-direction:column;
 align-items:center;
 justify-content:center;
 font-size:32px;
+text-align:center;
+}
+
+#manager h1{
+font-size:48px;
+letter-spacing:1px;
+margin-bottom:40px;
 }
 
 #closeManager{
 position:absolute;
-top:20px;
-right:30px;
-font-size:30px;
+top:25px;
+right:35px;
+font-size:36px;
 cursor:pointer;
+color:white;
 }
 
 #stats{
-margin-top:40px;
-font-size:28px;
-line-height:1.8;
+margin-top:20px;
+font-size:34px;
+line-height:2.2;
+font-weight:600;
+}
+
+.statRow{
+margin:18px 0;
 }
 
 </style>
@@ -171,7 +193,9 @@ line-height:1.8;
 <h1>How was your meal today?</h1>
 </div>
 
+<div class="mainArea">
 <div id="content"></div>
+</div>
 
 <div id="popup">Thank you for your feedback!</div>
 
@@ -198,12 +222,11 @@ const SCRIPT_URL="https://script.google.com/macros/s/AKfycbwATBL0-o0_d52bSJaYImV
 function updateScreen(){
 
 const now=new Date();
-
 const minutes=now.getHours()*60+now.getMinutes();
 
 let html="";
 
-/* Breakfast 7:00–11:59 */
+/* Breakfast */
 
 if(minutes>=420 && minutes<720){
 
@@ -219,7 +242,7 @@ html=`
 
 }
 
-/* Lunch 12:00–5:29 */
+/* Lunch */
 
 else if(minutes>=720 && minutes<1050){
 
@@ -247,7 +270,7 @@ html=`
 
 }
 
-/* Dinner 5:30–9:00 */
+/* Dinner */
 
 else if(minutes>=1050 && minutes<1260){
 
@@ -260,12 +283,6 @@ html=`
 </div>
 </div>
 `;
-
-}
-
-else{
-
-html="";
 
 }
 
@@ -326,27 +343,32 @@ fetch(SCRIPT_URL)
 .then(text=>{
 
 const data=JSON.parse(text);
-
 const today=data.today || {};
 
 document.getElementById("stats").innerHTML=`
 
-Breakfast 👍 ${today.breakfast_up ?? 0} | 👎 ${today.breakfast_down ?? 0}<br><br>
+<div class="statRow">
+Breakfast 👍 ${today.breakfast_up ?? 0} | 👎 ${today.breakfast_down ?? 0}
+</div>
 
-Korean 👍 ${today.korean_up ?? 0} | 👎 ${today.korean_down ?? 0}<br><br>
+<div class="statRow">
+Korean 👍 ${today.korean_up ?? 0} | 👎 ${today.korean_down ?? 0}
+</div>
 
-American 👍 ${today.american_up ?? 0} | 👎 ${today.american_down ?? 0}<br><br>
+<div class="statRow">
+American 👍 ${today.american_up ?? 0} | 👎 ${today.american_down ?? 0}
+</div>
 
+<div class="statRow">
 Dinner 👍 ${today.dinner_up ?? 0} | 👎 ${today.dinner_down ?? 0}
+</div>
 
 `;
 
 })
 
 .catch(()=>{
-
 document.getElementById("stats").innerHTML="Unable to load stats";
-
 });
 
 }
@@ -364,7 +386,6 @@ tapCount++;
 if(tapCount>=5){
 
 openManager();
-
 tapCount=0;
 
 }
@@ -388,15 +409,12 @@ setInterval(loadStats,5000);
 /* CLOSE DASHBOARD */
 
 document.getElementById("closeManager").onclick=()=>{
-
 document.getElementById("manager").style.display="none";
-
 };
 
 /* AUTO SCREEN UPDATE */
 
 updateScreen();
-
 setInterval(updateScreen,60000);
 
 </script>
