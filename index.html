@@ -32,7 +32,7 @@ margin:0;
 color:#222;
 }
 
-/* Main Center Area */
+/* Main Area */
 
 .mainArea{
 flex:1;
@@ -140,13 +140,12 @@ animation:popup .45s forwards;
 100%{transform:translate(-50%,-50%) scale(1);opacity:1}
 }
 
-/* Floating Hearts */
+/* Hearts */
 
 .heart{
 position:fixed;
-bottom:120px;
 font-size:22px;
-animation:floatHeart 2s linear forwards;
+animation:floatHeart 2.2s ease-out forwards;
 pointer-events:none;
 }
 
@@ -156,7 +155,7 @@ transform:translateY(0) scale(1);
 opacity:1;
 }
 100%{
-transform:translateY(-220px) scale(1.6);
+transform:translateY(-180px) scale(1.6);
 opacity:0;
 }
 }
@@ -256,8 +255,6 @@ font-size:40px;
 
 <div id="popup">Thank you for your feedback!</div>
 
-<!-- Manager Dashboard -->
-
 <div id="manager">
 
 <div id="closeManager">✕</div>
@@ -270,11 +267,9 @@ font-size:40px;
 
 <script>
 
-/* GOOGLE SCRIPT URL */
-
 const SCRIPT_URL="https://script.google.com/macros/s/AKfycbwATBL0-o0_d52bSJaYImVZwJ0LBP-NqVi5RPMl8op7Q0unpdvmUDH9tVdIMqvcUhgC/exec";
 
-/* SCREEN LOGIC */
+/* SCREEN */
 
 function updateScreen(){
 
@@ -282,8 +277,6 @@ const now=new Date();
 const minutes=now.getHours()*60+now.getMinutes();
 
 let html="";
-
-/* Breakfast */
 
 if(minutes>=420 && minutes<720){
 
@@ -298,8 +291,6 @@ html=`
 `;
 
 }
-
-/* Lunch */
 
 else if(minutes>=720 && minutes<1050){
 
@@ -327,8 +318,6 @@ html=`
 
 }
 
-/* Dinner */
-
 else if(minutes>=1050 && minutes<1260){
 
 html=`
@@ -349,29 +338,30 @@ attachButtons();
 
 }
 
-/* HEART EFFECT */
+/* HEARTS */
 
 function showHearts(){
 
-for(let i=0;i<18;i++){
+for(let i=0;i<22;i++){
 
 const heart=document.createElement("div");
 heart.className="heart";
 heart.innerHTML="❤️";
 
 heart.style.left=Math.random()*window.innerWidth+"px";
-heart.style.fontSize=(18+Math.random()*18)+"px";
-heart.style.animationDuration=(1.5+Math.random()*1)+"s";
+heart.style.top=Math.random()*window.innerHeight+"px";
+heart.style.fontSize=(18+Math.random()*24)+"px";
+heart.style.animationDuration=(1.5+Math.random()*1.5)+"s";
 
 document.body.appendChild(heart);
 
-setTimeout(()=>heart.remove(),2000);
+setTimeout(()=>heart.remove(),2500);
 
 }
 
 }
 
-/* BUTTON HANDLER */
+/* BUTTONS */
 
 function attachButtons(){
 
@@ -454,7 +444,7 @@ document.getElementById("stats").innerHTML="Unable to load stats";
 
 }
 
-/* SECRET MANAGER TAP */
+/* SECRET TAP */
 
 let tapCount=0;
 
@@ -475,7 +465,7 @@ tapCount=0;
 
 });
 
-/* OPEN DASHBOARD */
+/* OPEN */
 
 function openManager(){
 
@@ -487,13 +477,11 @@ setInterval(loadStats,5000);
 
 }
 
-/* CLOSE DASHBOARD */
+/* CLOSE */
 
 document.getElementById("closeManager").onclick=()=>{
 document.getElementById("manager").style.display="none";
 };
-
-/* AUTO SCREEN UPDATE */
 
 updateScreen();
 setInterval(updateScreen,60000);
