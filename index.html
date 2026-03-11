@@ -140,6 +140,27 @@ animation:popup .45s forwards;
 100%{transform:translate(-50%,-50%) scale(1);opacity:1}
 }
 
+/* Floating Hearts */
+
+.heart{
+position:fixed;
+bottom:120px;
+font-size:22px;
+animation:floatHeart 2s linear forwards;
+pointer-events:none;
+}
+
+@keyframes floatHeart{
+0%{
+transform:translateY(0) scale(1);
+opacity:1;
+}
+100%{
+transform:translateY(-220px) scale(1.6);
+opacity:0;
+}
+}
+
 /* Manager Dashboard */
 
 #manager{
@@ -184,9 +205,7 @@ font-weight:600;
 margin:18px 0;
 }
 
-/* =========================
-   MOBILE OPTIMIZATION
-   ========================= */
+/* MOBILE */
 
 @media (max-width:768px){
 
@@ -237,7 +256,7 @@ font-size:40px;
 
 <div id="popup">Thank you for your feedback!</div>
 
-<!-- Manager Screen -->
+<!-- Manager Dashboard -->
 
 <div id="manager">
 
@@ -330,6 +349,28 @@ attachButtons();
 
 }
 
+/* HEART EFFECT */
+
+function showHearts(){
+
+for(let i=0;i<18;i++){
+
+const heart=document.createElement("div");
+heart.className="heart";
+heart.innerHTML="❤️";
+
+heart.style.left=Math.random()*window.innerWidth+"px";
+heart.style.fontSize=(18+Math.random()*18)+"px";
+heart.style.animationDuration=(1.5+Math.random()*1)+"s";
+
+document.body.appendChild(heart);
+
+setTimeout(()=>heart.remove(),2000);
+
+}
+
+}
+
 /* BUTTON HANDLER */
 
 function attachButtons(){
@@ -347,6 +388,10 @@ response:btn.dataset.response,
 timestamp:new Date().toISOString()
 })
 });
+
+if(btn.dataset.response==="Loved it"){
+showHearts();
+}
 
 showPopup();
 
