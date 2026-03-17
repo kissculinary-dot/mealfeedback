@@ -1,6 +1,4 @@
-```html
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -99,12 +97,6 @@ box-shadow:0 20px 55px rgba(0,0,0,0.2);
 transition:.25s;
 position:relative;
 overflow:hidden;
-
-font-family:
-'Noto Color Emoji',
-'Apple Color Emoji',
-'Segoe UI Emoji',
-sans-serif;
 }
 
 .koreanBtn{
@@ -162,12 +154,6 @@ position:fixed;
 font-size:22px;
 animation:floatHeart 2.2s ease-out forwards;
 pointer-events:none;
-
-font-family:
-'Noto Color Emoji',
-'Apple Color Emoji',
-'Segoe UI Emoji',
-sans-serif;
 }
 
 @keyframes floatHeart{
@@ -182,12 +168,6 @@ position:fixed;
 font-size:22px;
 animation:floatCry 2.2s ease-out forwards;
 pointer-events:none;
-
-font-family:
-'Noto Color Emoji',
-'Apple Color Emoji',
-'Segoe UI Emoji',
-sans-serif;
 }
 
 @keyframes floatCry{
@@ -292,18 +272,26 @@ font-size:40px;
 <div id="popup">Thank you for your feedback!</div>
 
 <div id="manager">
-
 <div id="closeManager">✕</div>
-
 <h1>Manager Dashboard</h1>
-
 <div id="stats">Loading...</div>
-
 </div>
+
+<!-- 🔊 SOUND -->
+<audio id="clickSound" src="sparkle.mp3" preload="auto"></audio>
 
 <script>
 
 const SCRIPT_URL="https://script.google.com/macros/s/AKfycbwATBL0-o0_d52bSJaYImVZwJ0LBP-NqVi5RPMl8op7Q0unpdvmUDH9tVdIMqvcUhgC/exec";
+
+/* Unlock audio on first interaction (important for iPad) */
+document.body.addEventListener("click", () => {
+  const sound = document.getElementById("clickSound");
+  sound.play().then(() => {
+    sound.pause();
+    sound.currentTime = 0;
+  }).catch(()=>{});
+}, { once: true });
 
 /* SCREEN */
 
@@ -377,47 +365,33 @@ attachButtons();
 /* HEARTS */
 
 function showHearts(){
-
 for(let i=0;i<22;i++){
-
 const heart=document.createElement("div");
 heart.className="heart";
 heart.innerHTML="❤️";
-
 heart.style.left=Math.random()*window.innerWidth+"px";
 heart.style.top=Math.random()*window.innerHeight+"px";
 heart.style.fontSize=(18+Math.random()*24)+"px";
 heart.style.animationDuration=(1.5+Math.random()*1.5)+"s";
-
 document.body.appendChild(heart);
-
 setTimeout(()=>heart.remove(),2500);
-
 }
-
 }
 
 /* CRY */
 
 function showCry(){
-
 for(let i=0;i<18;i++){
-
 const cry=document.createElement("div");
 cry.className="cry";
 cry.innerHTML="😢";
-
 cry.style.left=Math.random()*window.innerWidth+"px";
 cry.style.top=Math.random()*window.innerHeight+"px";
 cry.style.fontSize=(18+Math.random()*24)+"px";
 cry.style.animationDuration=(1.5+Math.random()*1.5)+"s";
-
 document.body.appendChild(cry);
-
 setTimeout(()=>cry.remove(),2500);
-
 }
-
 }
 
 /* BUTTONS */
@@ -427,6 +401,12 @@ function attachButtons(){
 document.querySelectorAll(".feedbackBtn").forEach(btn=>{
 
 btn.addEventListener("click",()=>{
+
+// 🔊 Play sparkle sound
+const sound=document.getElementById("clickSound");
+sound.currentTime=0;
+sound.volume=0.4;
+sound.play().catch(()=>{});
 
 fetch(SCRIPT_URL,{
 method:"POST",
@@ -452,15 +432,9 @@ showPopup();
 /* POPUP */
 
 function showPopup(){
-
 const popup=document.getElementById("popup");
-
 popup.classList.add("show");
-
-setTimeout(()=>{
-popup.classList.remove("show");
-},1000);
-
+setTimeout(()=>{popup.classList.remove("show");},1000);
 }
 
 /* MANAGER DASHBOARD */
@@ -551,13 +525,9 @@ tapCount=0;
 /* OPEN */
 
 function openManager(){
-
 document.getElementById("manager").style.display="flex";
-
 loadStats();
-
 setInterval(loadStats,5000);
-
 }
 
 /* CLOSE */
@@ -573,4 +543,3 @@ setInterval(updateScreen,60000);
 
 </body>
 </html>
-```
