@@ -97,6 +97,13 @@ box-shadow:0 20px 55px rgba(0,0,0,0.2);
 transition:.25s;
 position:relative;
 overflow:hidden;
+
+/* ✅ FIXED: forces color emojis */
+font-family:
+'Noto Color Emoji',
+'Apple Color Emoji',
+'Segoe UI Emoji',
+sans-serif;
 }
 
 .koreanBtn{
@@ -154,6 +161,13 @@ position:fixed;
 font-size:22px;
 animation:floatHeart 2.2s ease-out forwards;
 pointer-events:none;
+
+/* ✅ ensures colored hearts */
+font-family:
+'Noto Color Emoji',
+'Apple Color Emoji',
+'Segoe UI Emoji',
+sans-serif;
 }
 
 @keyframes floatHeart{
@@ -168,6 +182,13 @@ position:fixed;
 font-size:22px;
 animation:floatCry 2.2s ease-out forwards;
 pointer-events:none;
+
+/* ✅ ensures colored cry emojis */
+font-family:
+'Noto Color Emoji',
+'Apple Color Emoji',
+'Segoe UI Emoji',
+sans-serif;
 }
 
 @keyframes floatCry{
@@ -284,7 +305,7 @@ font-size:40px;
 
 const SCRIPT_URL="https://script.google.com/macros/s/AKfycbwATBL0-o0_d52bSJaYImVZwJ0LBP-NqVi5RPMl8op7Q0unpdvmUDH9tVdIMqvcUhgC/exec";
 
-/* Unlock audio on first interaction (important for iPad) */
+/* Unlock audio (iPad fix) */
 document.body.addEventListener("click", () => {
   const sound = document.getElementById("clickSound");
   sound.play().then(() => {
@@ -292,8 +313,6 @@ document.body.addEventListener("click", () => {
     sound.currentTime = 0;
   }).catch(()=>{});
 }, { once: true });
-
-/* SCREEN */
 
 function updateScreen(){
 
@@ -357,12 +376,10 @@ html=`
 }
 
 document.getElementById("content").innerHTML=html;
-
 attachButtons();
-
 }
 
-/* HEARTS */
+/* Effects */
 
 function showHearts(){
 for(let i=0;i<22;i++){
@@ -372,13 +389,10 @@ heart.innerHTML="❤️";
 heart.style.left=Math.random()*window.innerWidth+"px";
 heart.style.top=Math.random()*window.innerHeight+"px";
 heart.style.fontSize=(18+Math.random()*24)+"px";
-heart.style.animationDuration=(1.5+Math.random()*1.5)+"s";
 document.body.appendChild(heart);
 setTimeout(()=>heart.remove(),2500);
 }
 }
-
-/* CRY */
 
 function showCry(){
 for(let i=0;i<18;i++){
@@ -388,21 +402,17 @@ cry.innerHTML="😢";
 cry.style.left=Math.random()*window.innerWidth+"px";
 cry.style.top=Math.random()*window.innerHeight+"px";
 cry.style.fontSize=(18+Math.random()*24)+"px";
-cry.style.animationDuration=(1.5+Math.random()*1.5)+"s";
 document.body.appendChild(cry);
 setTimeout(()=>cry.remove(),2500);
 }
 }
 
-/* BUTTONS */
+/* Buttons */
 
 function attachButtons(){
-
 document.querySelectorAll(".feedbackBtn").forEach(btn=>{
-
 btn.addEventListener("click",()=>{
 
-// 🔊 Play sparkle sound
 const sound=document.getElementById("clickSound");
 sound.currentTime=0;
 sound.volume=0.4;
@@ -424,113 +434,18 @@ if(btn.dataset.response==="Needs Improvement") showCry();
 showPopup();
 
 });
-
 });
-
 }
-
-/* POPUP */
 
 function showPopup(){
 const popup=document.getElementById("popup");
 popup.classList.add("show");
-setTimeout(()=>{popup.classList.remove("show");},1000);
+setTimeout(()=>popup.classList.remove("show"),1000);
 }
-
-/* MANAGER DASHBOARD */
-
-function loadStats(){
-
-fetch(SCRIPT_URL)
-.then(res=>res.text())
-.then(text=>{
-
-const data=JSON.parse(text);
-const today=data.today || {};
-
-const bUp=today.breakfast_up ?? 0;
-const bDown=today.breakfast_down ?? 0;
-
-const kUp=today.korean_up ?? 0;
-const kDown=today.korean_down ?? 0;
-
-const aUp=today.american_up ?? 0;
-const aDown=today.american_down ?? 0;
-
-const dUp=today.dinner_up ?? 0;
-const dDown=today.dinner_down ?? 0;
-
-const bTotal=bUp+bDown;
-const kTotal=kUp+kDown;
-const aTotal=aUp+aDown;
-const dTotal=dUp+dDown;
-
-const totalVotes=bTotal+kTotal+aTotal+dTotal;
-
-function percent(part,total){
-if(total===0) return 0;
-return Math.round((part/total)*100);
-}
-
-document.getElementById("stats").innerHTML=`
-
-<div class="statRow">
-Breakfast 👍 ${bUp} (${percent(bUp,bTotal)}%) | 👎 ${bDown} (${percent(bDown,bTotal)}%) | Total: ${bTotal}
-</div>
-
-<div class="statRow">
-Korean 👍 ${kUp} (${percent(kUp,kTotal)}%) | 👎 ${kDown} (${percent(kDown,kTotal)}%) | Total: ${kTotal}
-</div>
-
-<div class="statRow">
-American 👍 ${aUp} (${percent(aUp,aTotal)}%) | 👎 ${aDown} (${percent(aDown,aTotal)}%) | Total: ${aTotal}
-</div>
-
-<div class="statRow">
-Dinner 👍 ${dUp} (${percent(dUp,dTotal)}%) | 👎 ${dDown} (${percent(dDown,dTotal)}%) | Total: ${dTotal}
-</div>
-
-<div class="statRow" style="margin-top:40px;font-size:40px;">
-Total Votes Today: ${totalVotes}
-</div>
-
-`;
-
-})
-.catch(()=>{
-document.getElementById("stats").innerHTML="Unable to load stats";
-});
-
-}
-
-/* SECRET TAP */
-
-let tapCount=0;
-
-document.body.addEventListener("click",(e)=>{
-
-if(e.clientX>window.innerWidth-120 && e.clientY<120){
-
-tapCount++;
-
-if(tapCount>=5){
-openManager();
-tapCount=0;
-}
-
-}
-
-});
-
-/* OPEN */
 
 function openManager(){
 document.getElementById("manager").style.display="flex";
-loadStats();
-setInterval(loadStats,5000);
 }
-
-/* CLOSE */
 
 document.getElementById("closeManager").onclick=()=>{
 document.getElementById("manager").style.display="none";
