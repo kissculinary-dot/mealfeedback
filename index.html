@@ -30,11 +30,11 @@ text-align:center;
 /* Header */
 
 .header{
-margin-top:100px;
+margin-top:80px;
 }
 
 .header h1{
-font-size:54px;
+font-size:64px;
 margin:0;
 color:#222;
 }
@@ -53,7 +53,7 @@ width:100%;
 
 .menuContainer{
 display:flex;
-gap:220px;
+gap:320px;
 justify-content:center;
 }
 
@@ -61,14 +61,15 @@ justify-content:center;
 display:flex;
 flex-direction:column;
 align-items:center;
+transition:0.3s;
 }
 
 /* Titles */
 
 .menuTitle{
-font-size:38px;
+font-size:52px;
 font-weight:700;
-margin-bottom:50px;
+margin-bottom:60px;
 }
 
 .korean{color:#c62828;}
@@ -79,26 +80,25 @@ margin-bottom:50px;
 
 .buttonRow{
 display:flex;
-gap:40px;
+gap:50px;
 }
 
 .feedbackBtn{
-width:200px;
-height:200px;
+width:260px;
+height:260px;
 border-radius:50%;
 border:none;
-font-size:60px;
+font-size:80px;
 cursor:pointer;
 color:white;
 display:flex;
 align-items:center;
 justify-content:center;
-box-shadow:0 20px 55px rgba(0,0,0,0.2);
+box-shadow:0 25px 65px rgba(0,0,0,0.25);
 transition:.25s;
 position:relative;
 overflow:hidden;
 
-/* ✅ FIXED: forces color emojis */
 font-family:
 'Noto Color Emoji',
 'Apple Color Emoji',
@@ -138,7 +138,7 @@ background:white;
 padding:40px 70px;
 border-radius:14px;
 box-shadow:0 25px 60px rgba(0,0,0,0.25);
-font-size:28px;
+font-size:32px;
 font-weight:600;
 opacity:0;
 pointer-events:none;
@@ -158,11 +158,10 @@ animation:popup .45s forwards;
 
 .heart{
 position:fixed;
-font-size:22px;
+font-size:26px;
 animation:floatHeart 2.2s ease-out forwards;
 pointer-events:none;
 
-/* ✅ ensures colored hearts */
 font-family:
 'Noto Color Emoji',
 'Apple Color Emoji',
@@ -172,18 +171,17 @@ sans-serif;
 
 @keyframes floatHeart{
 0%{transform:translateY(0) scale(1);opacity:1;}
-100%{transform:translateY(-180px) scale(1.6);opacity:0;}
+100%{transform:translateY(-200px) scale(1.8);opacity:0;}
 }
 
 /* Crying emojis */
 
 .cry{
 position:fixed;
-font-size:22px;
+font-size:26px;
 animation:floatCry 2.2s ease-out forwards;
 pointer-events:none;
 
-/* ✅ ensures colored cry emojis */
 font-family:
 'Noto Color Emoji',
 'Apple Color Emoji',
@@ -193,7 +191,7 @@ sans-serif;
 
 @keyframes floatCry{
 0%{transform:translateY(0) scale(1);opacity:1;}
-100%{transform:translateY(-160px) scale(1.4);opacity:0;}
+100%{transform:translateY(-180px) scale(1.5);opacity:0;}
 }
 
 /* Manager Dashboard */
@@ -215,7 +213,7 @@ text-align:center;
 }
 
 #manager h1{
-font-size:48px;
+font-size:52px;
 letter-spacing:1px;
 margin-bottom:40px;
 }
@@ -298,14 +296,12 @@ font-size:40px;
 <div id="stats">Loading...</div>
 </div>
 
-<!-- 🔊 SOUND -->
 <audio id="clickSound" src="sparkle.mp3" preload="auto"></audio>
 
 <script>
 
 const SCRIPT_URL="https://script.google.com/macros/s/AKfycbwATBL0-o0_d52bSJaYImVZwJ0LBP-NqVi5RPMl8op7Q0unpdvmUDH9tVdIMqvcUhgC/exec";
 
-/* Unlock audio (iPad fix) */
 document.body.addEventListener("click", () => {
   const sound = document.getElementById("clickSound");
   sound.play().then(() => {
@@ -320,15 +316,20 @@ const now=new Date();
 const minutes=now.getHours()*60+now.getMinutes();
 
 let html="";
+let singleMenu=false;
 
 if(minutes>=420 && minutes<720){
 
+singleMenu=true;
+
 html=`
+<div class="menuContainer">
 <div class="menuCard">
 <div class="menuTitle whiteTitle">Breakfast</div>
 <div class="buttonRow">
 <button class="feedbackBtn whiteBtn" data-menu="Breakfast" data-response="Loved it">👍</button>
 <button class="feedbackBtn whiteBtn" data-menu="Breakfast" data-response="Needs Improvement">👎</button>
+</div>
 </div>
 </div>
 `;
@@ -363,7 +364,10 @@ html=`
 
 else if(minutes>=1050 && minutes<1260){
 
+singleMenu=true;
+
 html=`
+<div class="menuContainer">
 <div class="menuCard">
 <div class="menuTitle whiteTitle">Dinner</div>
 <div class="buttonRow">
@@ -371,15 +375,20 @@ html=`
 <button class="feedbackBtn whiteBtn" data-menu="Dinner" data-response="Needs Improvement">👎</button>
 </div>
 </div>
+</div>
 `;
 
 }
 
 document.getElementById("content").innerHTML=html;
-attachButtons();
+
+/* Auto scale for single menu */
+if(singleMenu){
+  document.querySelector(".menuCard").style.transform="scale(1.25)";
 }
 
-/* Effects */
+attachButtons();
+}
 
 function showHearts(){
 for(let i=0;i<22;i++){
@@ -388,7 +397,7 @@ heart.className="heart";
 heart.innerHTML="❤️";
 heart.style.left=Math.random()*window.innerWidth+"px";
 heart.style.top=Math.random()*window.innerHeight+"px";
-heart.style.fontSize=(18+Math.random()*24)+"px";
+heart.style.fontSize=(20+Math.random()*28)+"px";
 document.body.appendChild(heart);
 setTimeout(()=>heart.remove(),2500);
 }
@@ -401,13 +410,11 @@ cry.className="cry";
 cry.innerHTML="😢";
 cry.style.left=Math.random()*window.innerWidth+"px";
 cry.style.top=Math.random()*window.innerHeight+"px";
-cry.style.fontSize=(18+Math.random()*24)+"px";
+cry.style.fontSize=(20+Math.random()*28)+"px";
 document.body.appendChild(cry);
 setTimeout(()=>cry.remove(),2500);
 }
 }
-
-/* Buttons */
 
 function attachButtons(){
 document.querySelectorAll(".feedbackBtn").forEach(btn=>{
@@ -442,14 +449,6 @@ const popup=document.getElementById("popup");
 popup.classList.add("show");
 setTimeout(()=>popup.classList.remove("show"),1000);
 }
-
-function openManager(){
-document.getElementById("manager").style.display="flex";
-}
-
-document.getElementById("closeManager").onclick=()=>{
-document.getElementById("manager").style.display="none";
-};
 
 updateScreen();
 setInterval(updateScreen,60000);
